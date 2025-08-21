@@ -10,8 +10,8 @@ app.use(cors());
 app.use(express.json());
 
 // Sample snapshot count endpoint
-app.get('/api/snapshot/count', (req, res) => {
-  res.json({ count: 42 }); // Replace with DB logic later
+app.get('/api/snapshot/count', (_req, res) => {
+  res.json({ count: new Date().getSeconds() }); // Replace with DB logic later
 });
 
 // Sample snapshot detail endpoint
