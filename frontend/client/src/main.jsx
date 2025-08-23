@@ -2,8 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import SnapshotDetail from './components/SnapshotDetail';
 import Home from './pages/Home';
 import About from './pages/About';
+import Snap from './components/Snap';
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -11,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
+          <Route path="about" element={<About />} />          
+          <Route path="/snapshot/:id" element={<SnapshotDetail />} />
+          <Route path="/snap/" element={<Snap />} />
         </Route>
       </Routes>
     </BrowserRouter>
