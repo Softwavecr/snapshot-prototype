@@ -29,8 +29,8 @@ const mylocation=  '{"location": {"type": "Point", "coordinates": [-74.0060, 40.
     const formData = new FormData();
     formData.append('image', imageFile);
     formData.append('comment', comment);
-    formData.append('lat', location.lat);
-    formData.append('lng', location.lng);
+    formData.append('location', location);
+    //formData.append('lng', location.lng);
 
     try {
       const res = await fetch(`${apiUrl}/snapshot`, {

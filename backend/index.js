@@ -1,10 +1,14 @@
 // backend/index.js
+
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const fileUpload = require('express-fileupload');
+app.use(fileUpload());
 
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE);
@@ -23,28 +27,75 @@ app.get('/api/snapshot/count', (_req, res) => {
   //res.json({ count: new Date().getSeconds() }); // Replace with DB logic later
 });
 
+
 //const image= 'https://www.istockphoto.com/photo/red-eyed-tree-frog-smile-gm1049028724-280573845';
 
 // Sample snapshot count endpoint
 app.post('/api/snapshot', async (req, res) => {
-  
-  const { image_url, location, comment } = req.body;
+  const file = req.files?.image; // Assuming you're using express-fileupload or multer
+  const { comment, location } = req.body;
 
-  const { data, error } = await supabase
+  console.log('*****************************************');
+
+  console.log('Body:', req.body);
+
+  console.log('Files:', req.files);
+
+  if (!file || !location) { 
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const filePath = `snapshots/${Date.now()}_${file.name}`;
+  console.log('** filePath:', filePath);
+
+  const { data: uploadData, error } = await supabase.storage
     .from('snapshots')
-    .insert([{ image_url, location, comment }])
+    .upload(filePath, file.data, {
+      contentType: file.mimetype,
+      upsert: false,
+    });
+
+  if (error) return res.status(500).json({ error: "Insert to img storage error: "+ error.message });
+
+  const { data: publicUrlData } = supabase.storage
+    .from('snapshots')
+    .getPublicUrl(filePath);
+
+  const publicUrl = publicUrlData?.publicUrl;
+  console.log('Public URL:', publicUrl);
+
+  // Insert metadata into DB
+  const { data: snapshotData, error: dbError } = await supabase
+    .from('snapshots')
+    .insert([{
+      image_url: publicUrl,
+      location: JSON.parse(location), // Ensure location is stored as JSONB
+      comment,
+    }])
     .select();
 
-  if (error) {
-    console.error('Supabase insert error:', error.message);
-    return res.status(500).json({ error: error.message });
-  }
+  if (dbError) return res.status(500).json({ error: "Insert to DB error: " + dbError.message });
 
-  if (!data || data.length === 0) {
-    return res.status(500).json({ error: 'Insert succeeded but no data returned' });
-  }
+  // if (error) {
+  //   console.error('Supabase insert error:', error.message);
+  //   return res.status(500).json({ error: error.message });
+  // }
+
+  // if (!data || data.length === 0) {
+  //   return res.status(500).json({ error: 'Insert succeeded but no data returned' });
+  // }
     
-  res.json({ snapshot: data[0] });
+  res.json({ snapshot: snapshotData[0] });
+});
+
+app.get('/api/snapshots', async (req, res) => {
+const { data: mysnapshots, error } = await supabase
+  .from('snapshots')
+  .select('*')
+  .order('created_at', { ascending: false });
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ mysnapshots });
 });
 
 // Sample snapshot detail endpoint

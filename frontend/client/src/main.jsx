@@ -6,6 +6,7 @@ import SnapshotDetail from './components/SnapshotDetail';
 import Home from './pages/Home';
 import About from './pages/About';
 import Snap from './components/Snap';
+import SnapshotList from './components/SnapshotList';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />          
           <Route path="/snapshot/:id" element={<SnapshotDetail />} />
+          <Route path="snapshots" element={<SnapshotList />} />
           <Route path="/snap/" element={<Snap />} />
         </Route>
       </Routes>

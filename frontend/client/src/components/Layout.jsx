@@ -7,6 +7,7 @@ export default function Layout() {
         <Link to="/" style={{ marginRight: '1rem' }}>Home</Link>
         <Link to="/Snap" >Snap </Link>
         <Link to="/about">About </Link>
+        <Link to="/snapshots" className="text-blue-600 mr-4">Snapshots</Link>
       </nav>
       <main style={{ padding: '1rem' }}>
         <Outlet />
