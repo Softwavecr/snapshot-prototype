@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="about" element={<About />} />          
+          <Route path="about" element={<About />} />                   
           <Route path="/snapshot/:id" element={<SnapshotDetail />} />
           <Route path="snapshots" element={<SnapshotList />} />
           <Route path="/snap/" element={<Snap />} />

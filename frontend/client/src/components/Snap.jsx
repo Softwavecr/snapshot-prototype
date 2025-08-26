@@ -8,13 +8,6 @@ const Snap = () => {
 
 const mylocation=  '{"location": {"type": "Point", "coordinates": [-74.0060, 40.7128]}, "metadata": {"city": "Brooklyn", "state": "NY", "postal_code": "11232"}}';
 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(
-  //     pos => setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-  //     () => setLocation(null)
-  //   );
-  // }, []);
-
   useEffect(() => {
     setLocation(mylocation)
   }, []);
