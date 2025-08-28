@@ -8,12 +8,39 @@ const Snap = () => {
 
 const mylocation=  '{"location": {"type": "Point", "coordinates": [-74.0060, 40.7128]}, "metadata": {"city": "Brooklyn", "state": "NY", "postal_code": "11232"}}';
 
-  useEffect(() => {
-    setLocation(mylocation)
-  }, []);
+useEffect(() => {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords;
+      const liveLocation = {
+        location: {
+          type: 'Point',
+          coordinates: [longitude, latitude],
+        },
+        metadata: {
+          city: '', // optional, can be filled later via reverse geocoding
+          state: '',
+          postal_code: '',
+        },
+      };
+      setLocation(JSON.stringify(liveLocation));
+      console.log('Location obtained:', JSON.stringify(liveLocation));
+      console.debug('Location obtained:', JSON.stringify(liveLocation));
+      setStatus('Location obtained? ' + JSON.stringify(liveLocation));
+    },
+    (error) => {
+      console.error('Geolocation error:', error);
+      setStatus('Unable to retrieve location');
+    }
+  );
+}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!location) {
+      setLocation(mylocation);
+    }
+
     if (!imageFile || !location) {
       setStatus('Missing image or location');
       return;

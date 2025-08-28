@@ -19,14 +19,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/api/snapshots/count', async (req, res) => {
+/*app.get('/api/snapshots/count', async (req, res) => {
   const { count, error } = await supabase
     .from('snapshots')
     .select('*', { count: 'exact', head: true });
 
   if (error) return res.status(500).json({ error: error.message });
   res.json({ count });
-});
+});*/
 
 app.post('/api/snapshot', async (req, res) => {
   const file = req.files?.image;
